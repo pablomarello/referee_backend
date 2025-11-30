@@ -4,6 +4,7 @@ import { connectDB } from './src/config/dbConfig.mjs';
 import userRoutes from './src/routes/userRoutes.mjs';
 import matchesRoutes from './src/routes/matchRoutes.mjs'
 import tournamentRoutes from './src/routes/tournamentRoutes.mjs'
+import assignmentRoutes from './src/routes/assignmentRoutes.mjs'
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,6 +20,7 @@ connectDB();
 app.use('/api', userRoutes);
 app.use('/api', matchesRoutes);
 app.use('/api', tournamentRoutes);
+app.use('/api', assignmentRoutes);
 
 // Middleware para parsear los datos del cuerpo (body) de los formularios
 app.use(express.urlencoded({ extended: true }));

@@ -16,3 +16,17 @@ export async function createTournament(tournament){
         };
       }
 }
+
+export async function getTournamentById(id){
+  return await TournamentsRepository.getId(id);
+}
+
+export async function updateTournament(id, tournament){
+  try {
+      let Tournament = await TournamentsRepository.update(id, tournament);
+      const result = {...Tournament.toJSON(), ...tournament}
+      return result
+    } catch (error) {
+  return { error };
+}
+}
