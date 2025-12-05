@@ -12,7 +12,17 @@ class UsersRepository extends IRepository {
       return await Match.find({});
     }
 
-  
+  async getId(id){
+    return await Match.findById(id);
+  }
+
+  async update(id, match){
+    return await Match.findByIdAndUpdate(id, match);
+  }
+
+  async delete(id){
+    return await Match.findByIdAndDelete(id);
+  }
 }
 
 export default new UsersRepository();

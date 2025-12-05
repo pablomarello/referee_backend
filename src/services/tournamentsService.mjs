@@ -30,3 +30,13 @@ export async function updateTournament(id, tournament){
   return { error };
 }
 }
+
+export async function deleteTournament(id){
+  try {
+      return await TournamentsRepository.delete(id);
+    } catch (error) {
+      return {
+        error: JSON.stringify(error)
+      }
+    }
+}

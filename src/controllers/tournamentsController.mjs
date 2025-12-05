@@ -1,5 +1,5 @@
 import { validationResult } from "express-validator";
-import { createTournament, getAllTournaments, getTournamentById, updateTournament } from "../services/tournamentsService.mjs";
+import { createTournament, deleteTournament, getAllTournaments, getTournamentById, updateTournament } from "../services/tournamentsService.mjs";
 
 
 export async function getAllTournamentsController(req, res){
@@ -56,4 +56,17 @@ export async function editTournamentController(req, res){
     data: result,
     mensaje: 'Torneo actualizado exitosamente'
   });
+}
+
+export async function deleteTournamentController(req, res){
+  const {id} = req.params;
+  const result = await deleteTournament(id);
+    if(result?.error){
+      res.status(400).json({mensaje: 'No se pudo eliminar el Torneo', error: result.error });
+      return;
+    }
+    res.status(200).json({
+      data: result,
+      mensaje: 'Torneo eliminado exitosamente'
+    });
 }

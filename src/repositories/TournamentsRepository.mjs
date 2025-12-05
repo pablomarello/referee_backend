@@ -19,6 +19,10 @@ class TournamentsRepository extends IRepository {
   async update(id, tournament){
     return await Tournament.findByIdAndUpdate(id, tournament);
   }
+
+  async delete(id){
+    return await Tournament.findByIdAndDelete(id);
+  }
 }
 
 export default new TournamentsRepository();
