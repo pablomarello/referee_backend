@@ -1,10 +1,10 @@
 import { body } from 'express-validator';
 
 const userValidations = [
-  body('name')
-    .trim().not().isEmpty().withMessage('El nombre del usuario es requerido')
-    .isLength({ min: 3 }).withMessage('El nombre debe tener como mínimo 3 caracteres')
-    .isLength({ max: 60 }).withMessage('El nombre debe tener como máximo 60 caracteres'),
+  body('username')
+    .trim().not().isEmpty().withMessage('El username del usuario es requerido')
+    .isLength({ min: 3 }).withMessage('El username debe tener como mínimo 3 caracteres')
+    .isLength({ max: 60 }).withMessage('El username debe tener como máximo 60 caracteres'),
   body('email')
     .trim()
     .notEmpty().withMessage('El email es requerido.')
@@ -18,9 +18,6 @@ const userValidations = [
     .matches(/[0-9]/).withMessage('La contraseña debe tener al menos un número.'),
   body('date_of_birth')
     .optional(),
-  body('role')
-    .isIn(['coordinador', 'arbitro'])
-    .withMessage('El rol debe ser "coordinador" o "arbitro".'),
   body('type_referee')
     .optional()
     .isIn(['principal', 'asistente'])

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const matchSchema = new mongoose.Schema({
-  date: { type: Date },
+  date: { type: Date, required: true },
   home_team: { type: String, required: true },
   away_team: { type: String, required: true },
   location: { type: String, required: true },
@@ -13,11 +13,6 @@ const matchSchema = new mongoose.Schema({
   },
 
   tournament: { type: mongoose.Schema.Types.ObjectId, ref: 'Tournament', required: true },
-  // tournament: { type: String },
-
-  referee: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  assistant1: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  assistant2: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 
   score_home: { type: Number, default: 0 },
   score_away: { type: Number, default: 0 },

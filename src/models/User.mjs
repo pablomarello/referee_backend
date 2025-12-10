@@ -1,15 +1,14 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-  name: { type: String, required: true, minlength: 3, maxlength: 60, },
+  username: { type: String, required: true, minlength: 3, maxlength: 60, },
   email: { type: String, required: true, unique: true, match: [/^\S+@\S+\.\S+$/, "Formato de email inválido"] },
   password: { type: String, required: true, minlength: 8 },
   date_of_birth: { type: Date },
 
   role: { 
-    type: String, 
-    enum: ["coordinador", "arbitro"], 
-    default: "arbitro",
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Role",
     required: true
   },
 

@@ -2,6 +2,9 @@ import { body } from 'express-validator';
 import mongoose from "mongoose";
 
 const matchValidations = [
+  body('date')
+    .not().isEmpty().withMessage('La fecha es requerida')
+    .isISO8601().withMessage('La fecha debe tener un formato válido'),
   body('home_team')
     .trim().not().isEmpty().withMessage('El nombre del equipo local es requerido')
     .isLength({ min: 3 }).withMessage('El nombre del equipo local debe tener como mínimo 3 caracteres')
@@ -29,18 +32,6 @@ const matchValidations = [
     .not().isEmpty().withMessage('El torneo es requerido')
     .custom((value) => mongoose.Types.ObjectId.isValid(value))
     .withMessage('El ID del torneo no es válido'),
-  body('referee')
-    .not().isEmpty().withMessage('El árbitro es requerido')
-    .custom((value) => mongoose.Types.ObjectId.isValid(value))
-    .withMessage('El ID del árbitro no es válido'),
-  body('assistant1')
-    .optional()
-    .custom((value) => mongoose.Types.ObjectId.isValid(value))
-    .withMessage('El ID del asistente 1 no es válido'),
-  body('assistant2')
-    .optional()
-    .custom((value) => mongoose.Types.ObjectId.isValid(value))
-    .withMessage('El ID del asistente 2 no es válido'),
   body('score_home')
     .optional()
     .isInt({ min: 0 }).withMessage('El marcador local no puede ser negativo'),
@@ -49,23 +40,23 @@ const matchValidations = [
     .isInt({ min: 0 }).withMessage('El marcador visitante no puede ser negativo'),
 
   // Evitar que el árbitro sea uno de los asistentes
-  body().custom(({ referee, assistant1, assistant2 }) => {
-    if (assistant1 && referee === assistant1) {
-      throw new Error('El árbitro no puede ser el asistente 1');
-    }
-    if (assistant2 && referee === assistant2) {
-      throw new Error('El árbitro no puede ser el asistente 2');
-    }
-    return true;
-  }),
+  // body().custom(({ referee, assistant1, assistant2 }) => {
+  //   if (assistant1 && referee === assistant1) {
+  //     throw new Error('El árbitro no puede ser el asistente 1');
+  //   }
+  //   if (assistant2 && referee === assistant2) {
+  //     throw new Error('El árbitro no puede ser el asistente 2');
+  //   }
+  //   return true;
+  // }),
 
   // Evitar que los asistentes sean iguales
-  body().custom(({ assistant1, assistant2 }) => {
-    if (assistant1 && assistant2 && assistant1 === assistant2) {
-      throw new Error('Los dos asistentes no pueden ser la misma persona');
-    }
-    return true;
-  }),
+  // body().custom(({ assistant1, assistant2 }) => {
+  //   if (assistant1 && assistant2 && assistant1 === assistant2) {
+  //     throw new Error('Los dos asistentes no pueden ser la misma persona');
+  //   }
+  //   return true;
+  // }),
 
   // Si el partido está "completed", debe haber resultado
   body().custom(({ status, score_home, score_away }) => {
