@@ -16,9 +16,10 @@ class UsersRepository extends IRepository {
     return await User.findByIdAndDelete(id);
   }
 
-  async getAll() {
-    return await User.find({});
-  }
+ async getAll() {
+  return await User.find({})
+    .populate("role", "name");
+}
 
   async getId(id) {
   return await User.findById(id);

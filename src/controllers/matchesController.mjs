@@ -45,10 +45,10 @@ export async function editMatchController(req, res) {
         return res.status(400).json({ errores: errors.array() });
       }
     
+
     const { id } = req.params;
     const match = req.body;
     const result = await updateMatch(id, match);
-  
     if(result?.error){
       res.status(400).json({mensaje: 'No se pudo actualizar el partido', error: result.error });
       return;

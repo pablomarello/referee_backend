@@ -10,8 +10,15 @@ class AssignmentRepository extends IRepository {
   }
 
   async getAll() {
-        return await Assignment.find({});
-      }
+  return await Assignment.find({})
+    .populate('match_id')
+    .populate('referee_id', 'username')
+    .populate('assistant1_id', 'username')
+    .populate('assistant2_id', 'username');
+}
+
+
+
 
   async getId(id){
     return await Assignment.findById(id);

@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator";
 import { createUser, deleteUser, getAllUsers, getUserById, updateUser } from "../services/usersService.mjs";
+import bcrypt from "bcryptjs";
 
 export async function getAllUsersController(req, res) {
   try {
@@ -37,24 +38,46 @@ export async function getUserByIdController(req, res) {
   }
 }
 
+
+
 export async function editUserController(req, res) {
   const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errores: errors.array() });
-    }
-  
-  const { id } = req.params;
-  const user = req.body;
-  const result = await updateUser(id, user);
-
-  if(result?.error){
-    res.status(400).json({mensaje: 'No se pudo actualizar el usuario', error: result.error });
-    return;
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errores: errors.array() });
   }
-  res.status(200).json({
-    data: result,
-    mensaje: 'Usuario actualizado exitosamente'
-  });
+
+  try {
+    const { id } = req.params;
+    const userData = { ...req.body };
+
+    // 🔐 Si viene password, la hasheamos
+    if (userData.password) {
+      const salt = await bcrypt.genSalt(10);
+      userData.password = await bcrypt.hash(userData.password, salt);
+    } else {
+      // Si no viene, NO tocar la password
+      delete userData.password;
+    }
+
+    const result = await updateUser(id, userData);
+
+    if (result?.error) {
+      return res.status(400).json({
+        mensaje: "No se pudo actualizar el usuario",
+        error: result.error
+      });
+    }
+
+    res.status(200).json({
+      data: result,
+      mensaje: "Usuario actualizado exitosamente"
+    });
+  } catch (error) {
+    console.error("Error editando usuario:", error);
+    res.status(500).json({
+      mensaje: "Error interno al actualizar el usuario"
+    });
+  }
 }
 
 export async function deleteUserController(req, res) {

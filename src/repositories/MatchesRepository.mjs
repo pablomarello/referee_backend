@@ -9,8 +9,10 @@ class UsersRepository extends IRepository {
   }
 
   async getAll() {
-      return await Match.find({});
-    }
+  return await Match.find({})
+    .populate('tournament');
+}
+
 
   async getId(id){
     return await Match.findById(id);

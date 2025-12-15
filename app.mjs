@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from "cors";
 import dotenv from 'dotenv';
 import { connectDB } from './src/config/dbConfig.mjs';
 import userRoutes from './src/routes/userRoutes.mjs';
@@ -14,7 +15,14 @@ const PORT = process.env.PORT || 3000;
 
 dotenv.config();
 
+// Configurar CORS
+app.use(cors({
+  origin: "http://localhost:5173", 
+  credentials: true
+}));
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); 
 
 //conexión a mongodb
 connectDB();
@@ -27,9 +35,6 @@ app.use('/api', assignmentRoutes);
 app.use('/api', authRoutes);
 app.use('/api', permissionRoutes);
 app.use('/api', rolesRoutes);
-
-// Middleware para parsear los datos del cuerpo (body) de los formularios
-app.use(express.urlencoded({ extended: true }));
 
 //Iniciar servidor
 app.listen(PORT, () =>{

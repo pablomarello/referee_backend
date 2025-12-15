@@ -23,15 +23,15 @@ class AuthService {
     const hashedPassword = await bcrypt.hash(UserData.password, 10);
 
     /// Si no envía un rol, asignar el rol por defecto
-  let roleId = UserData.role;
+    let roleId = UserData.role;
 
-  if (!roleId) {
-    const defaultRole = await Role.findOne({ name: "arbitro" });
-    if (!defaultRole) {
-      throw new Error("Rol por defecto no encontrado. Contacte al administrador.");
+    if (!roleId) {
+      const defaultRole = await Role.findOne({ name: "arbitro" });
+      if (!defaultRole) {
+        throw new Error("Rol por defecto no encontrado. Contacte al administrador.");
+      }
+      roleId = defaultRole._id;
     }
-    roleId = defaultRole._id;
-  }
 
     //Creamos una nueva instancia del usuario del modelo User con los datos recibidos
     const user = new User({
@@ -43,6 +43,12 @@ class AuthService {
 
     //Guardamos el usuario en la base de datos
     await user.save();
+    await user.populate({
+      path: "role",
+      populate: { path: "permission" }
+    });
+
+
 
     //Convertimos el objeto moongose a un objeto plano
     const userResponse = user.toObject();
@@ -59,7 +65,13 @@ class AuthService {
 
   async login(email, password) {
     //Buscamos el usuario por su email
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email })
+      .populate({
+        path: "role",
+        populate: { path: "permission" }
+      });
+
+
     if (!user) {
       throw new Error("Usuario no encontrado");
     }
@@ -76,17 +88,19 @@ class AuthService {
 
     //Generamos u nuevo token y retornamos la respuesta
     const token = this.generateToken(user);
-    return { user: userResponse, token, message: "Login exitoso"};
+    return { user: userResponse, token, message: "Login exitoso" };
   }
 
 
   //Metodo para generar un token JWT
   generateToken(user) {
+    const permissions = user.role.permission.map(p => p.name);
     //Generamos un token que incluye el id y el rol del usuario
     return jwt.sign(
       {
         id: user._id,
-        role: user.role
+        role: user.role.name,
+        permissions
       },
       //usamos la clave secreta del .env
       process.env.JWT_SECRET,

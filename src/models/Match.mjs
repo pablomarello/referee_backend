@@ -19,8 +19,8 @@ const matchSchema = new mongoose.Schema({
 
   status: { 
     type: String,
-    enum: ["scheduled", "in_progress", "completed", "suspended"],
-    default: "scheduled"
+    enum: ["programado", "en progreso", "finalizado", "suspendido"],
+    default: "programado"
   },
 
   createdAt: { type: Date, default: Date.now },
