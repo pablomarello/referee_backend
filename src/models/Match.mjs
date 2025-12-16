@@ -5,6 +5,7 @@ const matchSchema = new mongoose.Schema({
   home_team: { type: String, required: true },
   away_team: { type: String, required: true },
   location: { type: String, required: true },
+  city: { type: String, required: true },
 
   category: { 
     type: String,
