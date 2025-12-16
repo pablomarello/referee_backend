@@ -15,9 +15,22 @@ const PORT = process.env.PORT || 3000;
 
 dotenv.config();
 
-// Configurar CORS
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://referee-frontend.netlify.app"
+];
+
 app.use(cors({
-  origin: "http://localhost:5173", 
+  origin: function (origin, callback) {
+    // permitir requests sin origin (Postman, curl)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true
 }));
 
